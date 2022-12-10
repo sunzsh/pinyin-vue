@@ -9,7 +9,7 @@
         <div class="menu-item" v-show="currentData.prev && currentData.prev !== currentData.current" @click="goPrev">上一个</div>
         <div class="menu-item" @click="addWrongs" v-show="mode !== 'wrongs'">加入错题本</div>
         <div class="menu-item" @click="openWrongs" v-show="wrongs.data.length > 0 && mode !== 'wrongs'">进入错题本 {{ `[${wrongs.data.length}个]` }}</div>
-        <div class="menu-item" @click="removeCurrentWrong" v-show="mode == 'wrongs'">记住了，移出错题本：<span style="font-family: 'pinyin'">{{currentData.current}}</span></div>
+        <div class="menu-item" @click="removeCurrentWrong" v-show="mode == 'wrongs'">记住了，移出：<span style="font-family: 'pinyin'">{{currentData.current}}</span></div>
         <div class="menu-item" @click="clearWrongs" v-show="mode == 'wrongs'" style="color: #F56C6C;">清空错题本</div>
         <div class="menu-item" @click="exitWrongs" v-show="mode == 'wrongs'">退出错题本</div>
       </div>
@@ -19,9 +19,8 @@
 </template>
 
 <script>
-import pinyin from 'pinyin'
 
-import data1 from '@/assets/py-data1.js'
+import pyData from '@/assets/py-data.js'
 
 export default {
   data () {
@@ -31,7 +30,7 @@ export default {
         current: '',
         prev: '',
         bakCurrent: '',
-        data: [...data1],
+        data: [...pyData],
       },
       wrongs: {
         current: '',
@@ -67,12 +66,7 @@ export default {
         return
       }
       // 从 this.data 中随机提取一个汉字并从 this.data 中删除
-      let next = this.currentData.data.splice(Math.floor(Math.random() * this.currentData.data.length), 1)[0];
-      // 正则判断：next如果是汉字
-      if (/^[\u4e00-\u9fa5]+$/.test(next)) {
-        next = (pinyin(next)[0]||{})[0] // 转拼音
-      }
-      this.currentData.current = next
+      this.currentData.current = this.currentData.data.splice(Math.floor(Math.random() * this.currentData.data.length), 1)[0];
     },
     goPrev() {
       this.currentData.bakCurrent = this.currentData.current
@@ -108,7 +102,6 @@ export default {
     },
     exitWrongs() {
       this.currentData = this.normal
-      this.next(true)
     }
   }
 }
@@ -151,8 +144,8 @@ export default {
 .menu-wrapper .menu .menu-item {
   margin: 0 auto;
   display: block;
-  width: 20%;
-  min-width: 150px;
+  width: 25%;
+  min-width: 200px;
   text-align: center;
   background-color: #fff;
   padding: 20px 0;
